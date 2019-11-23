@@ -28,16 +28,35 @@ It is expected that you have a Kubernetes cluster running at this point, with `h
 
 ## Get Started
 
-Now that everything is configured, lets start using the Chart. Use the fields `env.MC_HOST_<alias>` to set alias for MinIO servers. By default there are two aliases configured `play` and `play1`, both pointing to MinIO Play server at `https://play.min.io`. Set alias, copy source and target via command line like so:
+Now that everything is configured, lets start using the Chart. To customise your chart deploy with your own values, you could supply them via a simple yaml file as below,
 
-```sh
-helm install chartmuseum/mirror --set env.MC_HOST_myminio=https://Q3AM3UQ867SPQQA43P2F:zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG@play.min.io,location.source=myminio/source1,location.target=myminio/target1 --generate-name
+```yaml
+env:
+  ## Format to set the alias is MC_HOST_<alias>=https://<Access Key>:<Secret Key>@<YOUR-S3-ENDPOINT>
+  ## After this, mc should be able to access this cluster using "alias"
+  MC_HOST_sitea: "http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@site-a-minio:9000"
+  MC_HOST_siteb: "http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@site-b-minio:9000"
+
+## Use this field to set the source and destination for mirror.
+## source and destination can be site wide / bucket wide / prefix wide.
+## Please ensure to add alias before bucket names. Alias should be set using env variables above.
+location:
+  source: "sitea"
+  target: "siteb"
+  buckets:
+    - "bucket1"
+    - "bucket2"
 ```
 
-Confirm if the `mc mirror` is running successfully using:
-
 ```sh
-kubectl get pods
+helm install chartmuseum/mirror -f args.yaml --generate-name
+```
+
+You can check the progress of mirror of the provided buckets between the source and target locations like so,
+```sh
+kubectl logs mirror-5fc7f5dc69-lkxrm mirror-bucket1
+
+kubectl logs mirror-5fc7f5dc69-lkxrm mirror-bucket2
 ```
 
 Finally verify if data is being mirrored from Source to target using `mc ls` or MinIO browser.
