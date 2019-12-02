@@ -28,7 +28,7 @@ It is expected that you have a Kubernetes cluster running at this point, with `h
 
 ## Get Started
 
-Now that everything is configured, lets start using the Chart. To customise your chart deploy with your own values, you could supply them via a simple yaml file as below,
+Now that everything is configured, lets start using the Chart. To customise your chart deploy with your own values, you could supply them via a simple yaml file named `args.yaml` as below,
 
 ```yaml
 env:
