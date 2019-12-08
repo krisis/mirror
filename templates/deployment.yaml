@@ -1,6 +1,6 @@
 {{ $pullPolicy := .Values.image.pullPolicy }}
 {{ $imageRepo := .Values.image.repository }}
-{{ $appVersion := .Chart.AppVersion }}
+{{ $appVersion := .Values.image.tag }}
 {{ $name := list "mirror" .Release.Name | join "-" }}
 {{ $envs := .Values.env }}
 {{ $resources := .Values.resources }}
